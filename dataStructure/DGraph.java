@@ -7,18 +7,18 @@ import java.util.Collection;
 
 public class DGraph implements graph
 {
-	ArrayList<node_data> v = new ArrayList<node_data>();
 	
 	//Empty constructor
 	public DGraph()
 	{
-		;
+		ArrayList<node_data> V = new ArrayList<node_data>();
+		ArrayList<node_data> E = new ArrayList<node_data>();
 	}
 
 	@Override
 	public node_data getNode(int key) 
 	{
-		if(key < 0 || key > v.size())
+		if(key < 0 || key > this.getV().size())
 		{
 			try 
 			{
@@ -41,6 +41,7 @@ public class DGraph implements graph
 	@Override
 	public void addNode(node_data n) 
 	{
+		this.g
 		// TODO Auto-generated method stub
 		
 	}
