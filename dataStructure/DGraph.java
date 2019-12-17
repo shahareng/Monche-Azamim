@@ -18,7 +18,7 @@ public class DGraph implements graph
 	@Override
 	public node_data getNode(int key) 
 	{
-		if(key <= 0 || key > v.size())
+		if(key < 0 || key > v.size())
 		{
 			try 
 			{
@@ -29,7 +29,6 @@ public class DGraph implements graph
 				e.printStackTrace();
 			}
 		}
-		
 	}
 
 	@Override
@@ -49,8 +48,17 @@ public class DGraph implements graph
 	@Override
 	public void connect(int src, int dest, double w) 
 	{
-		// TODO Auto-generated method stub
-		
+		if(w < 0)
+		{
+			try 
+			{
+				throw new IOException();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
