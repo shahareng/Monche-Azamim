@@ -7,7 +7,8 @@ import utils.Point3D;
  * @author boaz.benmoshe
  *
  */
-public interface node_data {
+public interface node_data 
+{
 	/**
 	 * Return the key (id) associated with this node.
 	 * @return
