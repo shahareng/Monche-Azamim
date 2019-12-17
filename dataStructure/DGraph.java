@@ -1,9 +1,14 @@
 package dataStructure;
 
+import java.awt.List;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class DGraph implements graph
 {
+	ArrayList<node_data> v = new ArrayList<node_data>();
+	
 	//Empty constructor
 	public DGraph()
 	{
@@ -13,8 +18,18 @@ public class DGraph implements graph
 	@Override
 	public node_data getNode(int key) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if(key <= 0 || key > v.size())
+		{
+			try 
+			{
+				throw new IOException();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	@Override
