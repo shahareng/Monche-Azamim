@@ -4,21 +4,29 @@ import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class DGraph implements graph
 {
+	HashMap<Integer,node_data> V = new HashMap<>();
+	HashMap<Integer,HashMap<Integer,edge_data>> E = new HashMap<>();
 	
 	//Empty constructor
 	public DGraph()
 	{
-		ArrayList<node_data> V = new ArrayList<node_data>();
-		ArrayList<node_data> E = new ArrayList<node_data>();
+		;
+	}
+	
+	public DGraph(HashMap<Integer,node_data>V,HashMap<Integer,HashMap<Integer,edge_data>>E)
+	{
+		this.V.putAll(V);
+		this.E.putAll(E);
 	}
 
 	@Override
 	public node_data getNode(int key) 
 	{
-		if(key < 0 || key > this.getV().size())
+		if(key < 0 || key > this.V.size())
 		{
 			try 
 			{
@@ -29,21 +37,30 @@ public class DGraph implements graph
 				e.printStackTrace();
 			}
 		}
+			return this.V.get(key);
 	}
 
 	@Override
 	public edge_data getEdge(int src, int dest) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if( !E.containsKey(src) || !E.containsValue(E.get(dest)))
+		{
+			try 
+			{
+				throw new IOException();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+			return this.E.get(src).get(dest);
 	}
 
 	@Override
 	public void addNode(node_data n) 
 	{
-		this.g
-		// TODO Auto-generated method stub
-		
+		this.V.put( n.getKey(), n);
 	}
 
 	@Override
@@ -60,6 +77,10 @@ public class DGraph implements graph
 				e.printStackTrace();
 			}
 		}
+		
+		edge_data e = 
+		
+		
 	}
 
 	@Override
@@ -79,29 +100,53 @@ public class DGraph implements graph
 	@Override
 	public node_data removeNode(int key) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if(!V.containsKey(key))
+		{
+			try 
+			{
+				throw new IOException();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		node_data n = V.get(key);
+		V.remove(key);
+		E.remove(key);
+		E.get(key).remove(key);
+		return n;
 	}
 
 	@Override
 	public edge_data removeEdge(int src, int dest)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if(!E.containsKey(src) || !E.get(src).containsKey(dest))
+		{
+			try 
+			{
+				throw new IOException();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		edge_data e = E.get(src).get(dest);
+		E.remove(src, E.get(dest));
+		return e;
 	}
 
 	@Override
 	public int nodeSize() 
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return V.size();
 	}
 
 	@Override
 	public int edgeSize()
-{
-		// TODO Auto-generated method stub
-		return 0;
+	{
+		return E.size();
 	}
 
 	@Override

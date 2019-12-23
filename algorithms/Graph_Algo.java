@@ -1,7 +1,10 @@
 package algorithms;
 
+import java.util.HashMap;
 import java.util.List;
 
+import dataStructure.DGraph;
+import dataStructure.edge_data;
 import dataStructure.graph;
 import dataStructure.node_data;
 /**
@@ -17,21 +20,21 @@ public class Graph_Algo implements graph_algorithms
 	public void init(graph g)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void init(String file_name) 
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void save(String file_name) 
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -57,7 +60,7 @@ public class Graph_Algo implements graph_algorithms
 
 	@Override
 	public List<node_data> TSP(List<Integer> targets) 
-	
+
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -66,8 +69,10 @@ public class Graph_Algo implements graph_algorithms
 	@Override
 	public graph copy() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		DGraph copy = new DGraph(this.V,this.E);
+		
+		return copy;
+
 	}
 
 }
