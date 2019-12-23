@@ -1,5 +1,6 @@
 package gui;
 
-public class Graph_GUI {
-
+public class Graph_GUI 
+{
+	
 }
