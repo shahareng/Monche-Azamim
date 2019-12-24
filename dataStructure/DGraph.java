@@ -26,7 +26,7 @@ public class DGraph implements graph
 	@Override
 	public node_data getNode(int key) 
 	{
-		if(key < 0 || key > this.V.size())
+		if(key < 0 && !this.V.containsKey(key))
 		{
 			try 
 			{
@@ -43,7 +43,7 @@ public class DGraph implements graph
 	@Override
 	public edge_data getEdge(int src, int dest) 
 	{
-		if( !E.containsKey(src) || !E.containsValue(E.get(dest)))
+		if( !E.containsKey(src) && !E.containsValue(E.get(dest)))
 		{
 			try 
 			{
@@ -78,7 +78,8 @@ public class DGraph implements graph
 			}
 		}
 		
-		edge_data e = 
+		edge_data e = new edge(src,dest,w);
+		
 		
 		
 	}
@@ -86,14 +87,14 @@ public class DGraph implements graph
 	@Override
 	public Collection<node_data> getV() 
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Collection<edge_data> getE(int node_id) 
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
