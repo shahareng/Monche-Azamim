@@ -1,3 +1,4 @@
+package gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Menu;
@@ -24,7 +25,7 @@ public class Window extends JFrame implements ActionListener, MouseListener
 	
 	private void initGUI() 
 	{
-		this.setSize(500, 500);
+		this.setSize(1000, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		MenuBar menuBar = new MenuBar();
@@ -32,10 +33,10 @@ public class Window extends JFrame implements ActionListener, MouseListener
 		menuBar.add(menu);
 		this.setMenuBar(menuBar);
 		
-		MenuItem item1 = new MenuItem("Item 1");
+		MenuItem item1 = new MenuItem("Save");
 		item1.addActionListener(this);
 		
-		MenuItem item2 = new MenuItem("Item 2");
+		MenuItem item2 = new MenuItem("Load");
 		item2.addActionListener(this);
 		
 		menu.add(item1);
@@ -58,8 +59,8 @@ public class Window extends JFrame implements ActionListener, MouseListener
 			if(prev != null)
 			{
 				g.setColor(Color.RED);
-				g.drawLine((int)p.x(), (int)p.y(), 
-						(int)prev.x(), (int)prev.y());
+				g.drawLine((int)p.x(), (int)p.y(),(int)prev.x(), (int)prev.y()); 
+						
 				
 				g.drawString("5", (int)((p.x()+prev.x())/2),(int)((p.y()+prev.y())/2));
 			}
@@ -75,7 +76,7 @@ public class Window extends JFrame implements ActionListener, MouseListener
 	{
 		String str = e.getActionCommand();
 		
-		if(str.equals("Item 1"))
+		if(str.equals("Save"))
 		{
 			Point3D p1 = new Point3D(100,100);
 			Point3D p2 = new Point3D(50,300);
@@ -88,16 +89,23 @@ public class Window extends JFrame implements ActionListener, MouseListener
 			repaint();
 		}
 		
+		if(str.equals("Load"))
+		{
+			
+		}
+		
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e)
+	{
 		System.out.println("mouseClicked");
 		
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e) 
+	{
 		int x = e.getX();
 		int y = e.getY();
 		Point3D p = new Point3D(x,y);
@@ -108,19 +116,22 @@ public class Window extends JFrame implements ActionListener, MouseListener
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(MouseEvent e)
+	{
 		System.out.println("mouseReleased");
 		
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) 
+	{
 		System.out.println("mouseEntered");
 		
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(MouseEvent e) 
+	{
 		System.out.println("mouseExited");
 	}
 }

@@ -10,13 +10,14 @@ public class DGraph implements graph
 {
 	HashMap<Integer,node_data> V = new HashMap<>();
 	HashMap<Integer,HashMap<Integer,edge_data>> E = new HashMap<>();
-	
+	int MC;
+	int ESize;
 	//Empty constructor
 	public DGraph()
 	{
 		;
 	}
-	
+
 	public DGraph(HashMap<Integer,node_data>V,HashMap<Integer,HashMap<Integer,edge_data>>E)
 	{
 		this.V.putAll(V);
@@ -37,7 +38,7 @@ public class DGraph implements graph
 				e.printStackTrace();
 			}
 		}
-			return this.V.get(key);
+		return this.V.get(key);
 	}
 
 	@Override
@@ -54,48 +55,67 @@ public class DGraph implements graph
 				e.printStackTrace();
 			}
 		}
-			return this.E.get(src).get(dest);
+		return this.E.get(src).get(dest);
 	}
 
 	@Override
 	public void addNode(node_data n) 
 	{
-		this.V.put( n.getKey(), n);
+		this.V.put(n.getKey(), n);
 	}
 
 	@Override
 	public void connect(int src, int dest, double w) 
 	{
-		if(w < 0)
+		boolean b=true;
+		
+		if (src == dest) 
 		{
-			try 
-			{
-				throw new IOException();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
+			System.out.println("src and dest are the same");
+			b = false;
 		}
-		
-		edge_data e = new edge(src,dest,w);
-		
-		
-		
+		if (b||(!(V.get(src) == null) || !(V.get(dest) == null))) 
+		{
+			if (E.containsKey(src))
+			{
+				if (E.get(src).get(dest) != null) 
+				{
+					throw new RuntimeException("The edge is already exist!");
+				}
+				else 
+				{
+					edge_data edge = new edge(src, dest, w);
+					this.E.get(src).put(dest, edge);
+					MC++;
+					ESize++;
+				}
+			} 
+			else 
+			{
+				edge_data edge = new edge(src, dest, w);
+				E.put(src, new HashMap<>());
+				this.E.get(src).put(dest, edge);
+				MC++;
+				ESize++;
+			}
+		} 
+		else if(b)
+		{
+			throw new RuntimeException("src/dest does not exist!");
+		}
 	}
 
 	@Override
 	public Collection<node_data> getV() 
-	{
-		
-		return null;
+	{	
+		return this.V.values();
 	}
 
 	@Override
 	public Collection<edge_data> getE(int node_id) 
 	{
 		
-		return null;
+		return this.E.get(node_id).values();
 	}
 
 	@Override
@@ -135,6 +155,7 @@ public class DGraph implements graph
 		}
 		edge_data e = E.get(src).get(dest);
 		E.remove(src, E.get(dest));
+		ESize--;
 		return e;
 	}
 
@@ -153,8 +174,7 @@ public class DGraph implements graph
 	@Override
 	public int getMC() 
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return this.MC;
 	}
 
 }

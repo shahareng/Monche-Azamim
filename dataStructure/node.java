@@ -10,9 +10,11 @@ public class node implements node_data
 	String info;
 	int tag;
 	
-	public node()
+	public node(int key, Point3D p,double w)
 	{
-		;
+		this.key = key;
+		this.location = p;
+		this.weight = w;
 	}
 	
 	@Override
