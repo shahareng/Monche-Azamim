@@ -62,6 +62,7 @@ public class DGraph implements graph
 	public void addNode(node_data n) 
 	{
 		this.V.put(n.getKey(), n);
+		MC++;
 	}
 
 	@Override
@@ -156,6 +157,7 @@ public class DGraph implements graph
 		edge_data e = E.get(src).get(dest);
 		E.remove(src, E.get(dest));
 		ESize--;
+		MC++;
 		return e;
 	}
 
@@ -168,7 +170,7 @@ public class DGraph implements graph
 	@Override
 	public int edgeSize()
 	{
-		return E.size();
+		return this.ESize;
 	}
 
 	@Override

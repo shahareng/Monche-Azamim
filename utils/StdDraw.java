@@ -76,6 +76,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import algorithms.Graph_Algo;
+import algorithms.graph_algorithms;
 import dataStructure.DGraph;
 import dataStructure.edge_data;
 import dataStructure.node;
@@ -738,21 +740,26 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		fileItem2.addActionListener(std);
 		fileItem2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		JMenuItem fileItem3 = new JMenuItem(" Clear   ");
+		fileItem3.addActionListener(std);
+		fileItem3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		file.add(fileItem1);
 		file.add(fileItem2);
+		file.add(fileItem3);
 
 		//algo options
-		JMenuItem algoItem1 = new JMenuItem(" Shortest Path   ");
+		JMenuItem algoItem1 = new JMenuItem(" Shortest Path Dist   ");
 		algoItem1.addActionListener(std);
-		algoItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
+		algoItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		JMenuItem algoItem2 = new JMenuItem(" isConnected   ");
 		algoItem2.addActionListener(std);
-		algoItem2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
+		algoItem2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		JMenuItem algoItem3 = new JMenuItem(" test   ");
+		JMenuItem algoItem3 = new JMenuItem(" TSP   ");
 		algoItem3.addActionListener(std);
-		algoItem3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+		algoItem3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		algoItem3.getAction();
 		algo.add(algoItem1);
@@ -1644,14 +1651,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 *
 	 * @param  filename the name of the file with one of the required suffixes
 	 */
-	public static void save(String filename) {
+	public static void save(String filename) 
+	{
 		if (filename == null) throw new IllegalArgumentException();
 		File file = new File(filename);
 		String suffix = filename.substring(filename.lastIndexOf('.') + 1);
 
 		// png files
-		if ("png".equalsIgnoreCase(suffix)) {
-			try {
+		if ("png".equalsIgnoreCase(suffix)) 
+		{
+			try 
+			{
 				ImageIO.write(onscreenImage, suffix, file);
 			}
 			catch (IOException e) {
@@ -1661,7 +1671,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 		// need to change from ARGB to RGB for JPEG
 		// reference: http://archives.java.sun.com/cgi-bin/wa?A2=ind0404&L=java2d-interest&D=0&P=2727
-		else if ("jpg".equalsIgnoreCase(suffix)) {
+		else if ("jpg".equalsIgnoreCase(suffix))
+		{
 			WritableRaster raster = onscreenImage.getRaster();
 			WritableRaster newRaster;
 			newRaster = raster.createWritableChild(0, 0, width, height, 0, 0, new int[] {0, 1, 2});
@@ -1671,7 +1682,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					cm.getGreenMask(),
 					cm.getBlueMask());
 			BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false,  null);
-			try {
+			try
+			{
 				ImageIO.write(rgbBuffer, suffix, file);
 			}
 			catch (IOException e) {
@@ -1679,7 +1691,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}
 		}
 
-		else {
+		else 
+		{
 			System.out.println("Invalid image file type: " + suffix);
 		}
 	}
@@ -1701,25 +1714,45 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			if (filename != null)
 			{
 				StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+				System.out.println("Graph Saved");
 			}
 		}
 		else if(str.equals(" Load   "))
 		{
 			FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.LOAD);
 			chooser.setVisible(true);
-			//String filename = chooser.getFile();
-			init();
-			//			if (filename != null)
-			//			{
-			//				StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
-			//			}
+			String filename = chooser.getFile();
+			//init();
+			if (filename != null)
+			{
+				StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+			}
 		}
 
 		else if(str.equals(" isConnected   "))
 		{
 
-			//isConnected();
+			if(graph2.isConnected())
+			{
+				StdDraw.text(100,10,"The graph is connected");
+			}
+			else
+			{
+				StdDraw.text(100,10,"The graph is not connected");
+			}
 
+		}
+		else if(str.equals(" TSP   "))
+		{
+
+		}
+		else if (str.equals(" Shortest Path Dist   "))
+		{
+
+		}
+		else if( str.equals(" Clear   "))
+		{
+			//clear all and repaint the original graph
 		}
 	}
 
@@ -1925,7 +1958,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * This method cannot be called directly.
 	 */
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void keyReleased(KeyEvent e) 
+	{
 		synchronized (keyLock) {
 			keysDown.remove(e.getKeyCode());
 		}
@@ -1933,26 +1967,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 
 	private static DGraph graph;
-	public void paint(Graphics g)
-	{
-		for(node_data nodes : graph.getV()) 
-		{
-			Point3D nodes_src = nodes.getLocation();
-			g.setColor(Color.BLUE);
-			g.fillOval((int)nodes_src.x()-5, (int)nodes_src.y()-5, 10, 10);
-			g.drawString(""+ nodes.getKey(), (int)nodes_src.x(),(int)(nodes_src.y()+20));
+	private static Graph_Algo graph2 = new Graph_Algo();
 
-			for(edge_data edges : graph.getE(nodes.getKey())) 
-			{
-				g.setColor(Color.RED);
-				Point3D nodes_dest = graph.getNode(edges.getDest()).getLocation();
-				g.drawLine((int)nodes_src.x(), (int)nodes_src.y(), (int)nodes_dest.x(), (int)nodes_dest.y());
-				int mid_of_edge_x=(int) ((nodes_src.x()+nodes_dest.x())/2);
-				int mid_of_edge_y=(int) ((nodes_src.y()+nodes_dest.y())/2);
-				g.drawString(""+ edges.getWeight(), mid_of_edge_x, mid_of_edge_y);
-			}
-		}
-	}
 	/**
 	 * Test client.
 	 *
@@ -1980,6 +1996,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		graph.connect(14,13,3.5);
 		graph.connect(12,15,10);
 		graph.connect(11,15,15);
+		//		graph2 = new Graph_Algo();
+		//		double ans = graph2.shortestPathDist(graph.getNode(10).getKey(), graph.getNode(11).getKey());
+		//		System.out.println(ans);
 		for (node_data nodes : graph.getV()) 
 		{
 			Point3D nodes_src = nodes.getLocation();
@@ -1987,29 +2006,35 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			StdDraw.setPenRadius(0.015);
 			StdDraw.point((int)nodes_src.x(), (int)nodes_src.y());
 			StdDraw.text((int)nodes_src.x(),(int)(nodes_src.y())+5, Integer.toString(nodes.getKey()));
-			
-			for(edge_data edges : graph.getE(nodes.getKey())) 
+
+			try 
 			{
-				//draw the edges line in Red
-				StdDraw.setPenColor(Color.RED);
-				StdDraw.setPenRadius(0.005);
-				Point3D nodes_dest = graph.getNode(edges.getDest()).getLocation();
-				StdDraw.line((int)nodes_src.x(), (int)nodes_src.y(), (int)nodes_dest.x(), (int)nodes_dest.y());
-				//draw a point of the edges direction in Yellow
-				StdDraw.setPenRadius(0.015);
-				StdDraw.setPenColor(YELLOW);
-				int dir_of_edge_x=(int) ((nodes_src.x()+4*nodes_dest.x())/5);
-				int dir_of_edge_y=(int) ((nodes_src.y()+4*nodes_dest.y())/5);
-				StdDraw.point(dir_of_edge_x , dir_of_edge_y);
-				//draw the edge weight in Black
-				int mid_of_edge_x=(int) ((nodes_src.x()+nodes_dest.x())/2);
-				int mid_of_edge_y=(int) ((nodes_src.y()+nodes_dest.y())/2);
-				StdDraw.setPenColor(BLACK);
-				StdDraw.text(mid_of_edge_x, mid_of_edge_y,Double.toString(edges.getWeight()));
+				for(edge_data edges : graph.getE(nodes.getKey())) 
+				{
+					//draw the edges line in Red
+					StdDraw.setPenColor(Color.RED);
+					StdDraw.setPenRadius(0.005);
+					Point3D nodes_dest = graph.getNode(edges.getDest()).getLocation();
+					StdDraw.line((int)nodes_src.x(), (int)nodes_src.y(), (int)nodes_dest.x(), (int)nodes_dest.y());
+					//draw a point of the edges direction in Yellow
+					StdDraw.setPenRadius(0.015);
+					StdDraw.setPenColor(YELLOW);
+					int dir_of_edge_x=(int) ((nodes_src.x()+4*nodes_dest.x())/5);
+					int dir_of_edge_y=(int) ((nodes_src.y()+4*nodes_dest.y())/5);
+					StdDraw.point(dir_of_edge_x , dir_of_edge_y);
+					//draw the edge weight in Black
+					int mid_of_edge_x=(int) ((nodes_src.x()+nodes_dest.x())/2);
+					int mid_of_edge_y=(int) ((nodes_src.y()+nodes_dest.y())/2);
+					StdDraw.setPenColor(BLACK);
+					StdDraw.text(mid_of_edge_x, mid_of_edge_y,Double.toString(edges.getWeight()));
+				}
+			}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
 			}
 		}	
 	}
-
 }
 
 

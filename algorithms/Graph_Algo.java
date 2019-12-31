@@ -1,5 +1,10 @@
 package algorithms;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,25 +22,59 @@ import dataStructure.node_data;
 public class Graph_Algo implements graph_algorithms
 {
 	private graph g;
+	
+	public Graph_Algo()
+	{
+		;
+	}
 	@Override
 	public void init(graph g)
 	{
-		// TODO Auto-generated method stub
+		this.g = g;
 
 	}
 
 	@Override
 	public void init(String file_name) 
 	{
-		// TODO Auto-generated method stub
+		try
+		{    
+			FileInputStream file = new FileInputStream(file_name); 
+			ObjectInputStream objInput = new ObjectInputStream(file); 
+			g = (graph)objInput.readObject(); 
+			objInput.close(); 
+			file.close(); 
+		} 
+		catch(IOException e) 
+		{ 
+			e.printStackTrace();
+		} 
+		catch(ClassNotFoundException e) 
+		{ 
+			e.printStackTrace(); 
+		} 
 
 	}
 
 	@Override
 	public void save(String file_name) 
 	{
-		// TODO Auto-generated method stub
-
+		try
+        {    
+            FileOutputStream file = new FileOutputStream(file_name); 
+            ObjectOutputStream out = new ObjectOutputStream(file); 
+              
+            out.writeObject(g); 
+            out.close(); 
+            file.close(); 
+              
+            System.out.println("Object has been serialized"); 
+        }   
+        catch(IOException ex) 
+        { 
+            System.out.println("IOException is caught"); 
+        } 
+		
 	}
 
 	@Override
@@ -103,9 +142,7 @@ public class Graph_Algo implements graph_algorithms
 								nd.setWeight(minWnode.getWeight()+ed.getWeight());
 								nd.setInfo(minWnode.getKey()+"");
 							}
-
 						}
-
 					}
 				}
 			}catch (Exception e) {};
@@ -135,7 +172,8 @@ public class Graph_Algo implements graph_algorithms
 	@Override
 	public graph copy() 
 	{
-		DGraph copy = new DGraph(this.V,this.E);
+		graph copy = new DGraph();
+		copy.
 
 		return copy;
 
