@@ -26,12 +26,13 @@ package utils;
  *       images and strings
  *
  ******************************************************************************/
-
+import dataStructure.graph;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -62,8 +63,10 @@ import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
@@ -74,6 +77,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import algorithms.Graph_Algo;
@@ -726,11 +730,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	{
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
-		JMenu algo = new JMenu("algo");
-		JMenu test = new JMenu("test");
+		JMenu algo = new JMenu("Algorithms");
+		JMenu op = new JMenu("Operations");
 		menuBar.add(file);
 		menuBar.add(algo);
-		menuBar.add(test);
+		menuBar.add(op);
 		//file options
 		JMenuItem fileItem1 = new JMenuItem(" Save   ");
 		fileItem1.addActionListener(std);
@@ -744,11 +748,16 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		fileItem3.addActionListener(std);
 		fileItem3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		JMenuItem fileItem4 = new JMenuItem(" graphFactory   ");
+		fileItem4.addActionListener(std);
+		fileItem4.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		file.add(fileItem1);
 		file.add(fileItem2);
 		file.add(fileItem3);
+		file.add(fileItem4);
 
-		//algo options
+		//algorithms options
 		JMenuItem algoItem1 = new JMenuItem(" Shortest Path Dist   ");
 		algoItem1.addActionListener(std);
 		algoItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
@@ -765,6 +774,20 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		algo.add(algoItem1);
 		algo.add(algoItem2);
 		algo.add(algoItem3);
+
+		//Operations
+		JMenuItem opItem1 = new JMenuItem(" add vertix   ");
+		algoItem1.addActionListener(std);
+		JMenuItem opItem2 = new JMenuItem(" add edge   ");
+		algoItem1.addActionListener(std);
+		JMenuItem opItem3 = new JMenuItem(" remove vertix   ");
+		algoItem1.addActionListener(std);
+		JMenuItem opItem4 = new JMenuItem(" remove edge   ");
+		algoItem1.addActionListener(std);
+		op.add(opItem1);
+		op.add(opItem2);
+		op.add(opItem3);
+		op.add(opItem4);
 		return menuBar;
 	}
 
@@ -1713,7 +1736,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			String filename = chooser.getFile();
 			if (filename != null)
 			{
-				StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+				graph2.save(filename);
 				System.out.println("Graph Saved");
 			}
 		}
@@ -1725,34 +1748,135 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			//init();
 			if (filename != null)
 			{
-				StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+				graph2.init(filename);
+				paintGraph();
 			}
 		}
-
 		else if(str.equals(" isConnected   "))
 		{
-
+			StdDraw.setPenColor(BLACK);
+			StdDraw.setPenRadius(0.5);
 			if(graph2.isConnected())
 			{
-				StdDraw.text(100,10,"The graph is connected");
+				StdDraw.textLeft(100,10,"The graph is connected");
 			}
 			else
 			{
 				StdDraw.text(100,10,"The graph is not connected");
 			}
-
 		}
-		else if(str.equals(" TSP   "))
-		{
-
-		}
+				else if(str.equals(" TSP   "))
+				{
+					List<Integer> tsp = new ArrayList<>();
+					JFrame f1 = new JFrame();
+					String s_TSP = "";
+					while(!s_TSP.equals("done") && tsp.size()<graph.getV().size())
+					{
+						s_TSP = JOptionPane.showInputDialog(f1,"Enter a vertix for the TSP List or done to apply");
+						try
+						{
+							int v_TSP = Integer.parseInt(s_TSP);
+							if((graph.getNode(v_TSP) != null ) && !tsp.contains(v_TSP))
+							{
+								tsp.add(v_TSP);
+							}
+						} catch(Exception ex)
+						{
+							System.out.println("illegal input!");
+						}
+					}
+					List<node_data> vToPaint = new ArrayList<>();
+					vToPaint.addAll(graph2.TSP(tsp));
+		
+					if(vToPaint.size() != 0)
+					{
+						for (int i = 0; i < vToPaint.size()-1; i++) 
+						{
+							StdDraw.setPenColor(GREEN);
+							StdDraw.setPenRadius(0.02);
+							double x1 = vToPaint.get(i).getLocation().x();
+							double y1 = vToPaint.get(i).getLocation().y();
+							double x2 = vToPaint.get(i+1).getLocation().x();
+							double y2 = vToPaint.get(i+1).getLocation().y();
+							StdDraw.point(x1,y1);
+							StdDraw.line(x1, y1,x2, y2);
+						} 
+					}
+				//StdDraw.this.operation = "TSP";
+				}
 		else if (str.equals(" Shortest Path Dist   "))
 		{
+			int count = 0;
+			Frame f2 = null;
+			//			
+			//			
+			//			
+			//			JFrame f = null; 
+			//		
+			//				int src=0, Dest=0;
+			//				boolean flag = true; 	
+			//				String temp1="",temp2=""; 
+			//
+			//				while (flag==true) {
+			//
+			//					temp1 	= JOptionPane.showInputDialog(f,"Enter src ID: ");
+			//					if(temp1.matches("\\d+")) {
+			//						src =Integer.parseInt(temp1);	
+			//						if(graph.getNode(src)!=null) {flag=false; continue;}
+			//					}	System.out.println("src Not Valid");
+			//				}flag =true;
+			//			
 
+
+
+
+
+			String v1 = JOptionPane.showInputDialog(f2,"Enter source vertix");
+			if(v1!="") {
+				String v2 = JOptionPane.showInputDialog(f2,"Enter destination vertix");
+				if(v2!="") {
+					try
+					{
+						int v_src = Integer.parseInt(v1);
+						int v_dest = Integer.parseInt(v2);
+					} catch(Exception ex) {
+					}
+				}
+			}
+			//System.out.println(v2);
+			//count++;
+
+			{
+				//System.out.println("illegal input!");
+			}
+
+			//this.operation = "ShortestPathDist";
 		}
 		else if( str.equals(" Clear   "))
 		{
-			//clear all and repaint the original graph
+			//clear all drawing and draw the original graph
+			init();
+			paintGraph();
+		}
+		else if(str.equals(" graphFactory   "))
+		{
+			graphFactory();
+		}
+		else if(str.equals(" add vertix   "))
+		{
+
+		}
+		else if(str.equals(" remove vertix   "))
+		{
+
+		}
+		else if(str.equals(" add edge   "))
+		{
+
+		}
+		else if(str.equals(" remove edge   "))
+		{
+
 		}
 	}
 
@@ -1812,8 +1936,86 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * This method cannot be called directly.
 	 */
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		// this body is intentionally left empty
+	public void mouseClicked(MouseEvent e) 
+	{
+//		double x=((Xmax-Xmin)/DEFAULT_SIZE)*(double)e.getX()+Xmin;
+//		double y=((Ymin-Ymax)/DEFAULT_SIZE)*(double)e.getY()+Ymax;
+//
+//		if(this.operation.equals("TSP"))
+//		{
+//			if(clickFind(x,y) != null)
+//			{
+//				targets.add(clickFind(x,y).getKey());
+//				System.out.println(targets.get(0).toString());
+//			}
+//			if(targets.size() > 1)
+//			{
+//				paintGraph();
+//				drawTSP(targets);
+//			}
+//		}
+//		else if(this.operation.equals("ShortestPathDist"))
+//		{
+//
+//			if(clickFind(x,y) != null)
+//			{
+//				targets.add(clickFind(x,y).getKey());
+//			}
+//			if(targets.size() > 1)
+//			{
+//				paintGraph();
+//				drawShortestPath(targets.get(0),targets.get(1));
+//			}
+//		}
+	}
+
+	public void drawShortestPath(int src,int dest) 
+	{
+		boolean first = true;
+		node_data prev=null;
+		for (Iterator<node_data>iter= graph2.shortestPath(src, dest).iterator();iter.hasNext();) 
+		{
+			node_data n = iter.next();
+			StdDraw.setPenColor(GREEN);
+			StdDraw.point(n.getLocation().x(), n.getLocation().y());
+			if(!first) {
+				StdDraw.line(prev.getLocation().x(),prev.getLocation().y(),n.getLocation().x(), n.getLocation().y());
+			}
+			first=false;
+			prev=n;
+		}	
+	}
+
+	public node_data clickFind(double x,double y)
+	{
+		for (node_data nodes : graph.getV()) 
+		{
+			if((Math.abs(nodes.getLocation().x()-x) <= this.EPSILON)&&(Math.abs(nodes.getLocation().y()-y) <= this.EPSILON))
+			{
+				return nodes;
+			}
+		}	
+		return null;
+	}
+
+	//drawing the TSP
+	public void drawTSP(List<Integer>targets)
+	{
+
+		//targets.add(targets.get(index));
+		boolean first = true;
+		node_data prev=null;
+		for (Iterator<node_data>iter= graph2.TSP(targets).iterator();iter.hasNext();) 
+		{
+			node_data n = iter.next();
+			StdDraw.setPenColor(GREEN);
+			StdDraw.point(n.getLocation().x(), n.getLocation().y());
+			if(!first) {
+				StdDraw.line(prev.getLocation().x(),prev.getLocation().y(),n.getLocation().x(), n.getLocation().y());
+			}
+			first=false;
+			prev=n;
+		}
 	}
 
 	/**
@@ -1832,12 +2034,19 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		// this body is intentionally left empty
 	}
 
+
+	//	public node_data isNode()
+	//	{
+	//		
+	//	}
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
-	public void mousePressed(MouseEvent e) {
-		synchronized (mouseLock) {
+	public void mousePressed(MouseEvent e) 
+	{
+		synchronized (mouseLock) 
+		{
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
 			isMousePressed = true;
@@ -1965,47 +2174,73 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-
-	private static DGraph graph;
+	//Initial parameters
+	private static graph graph;
 	private static Graph_Algo graph2 = new Graph_Algo();
+	private String operation;
+	private List<Integer> targets = new ArrayList<Integer>();
+	private final double EPSILON = 1.2; 
 
-	/**
-	 * Test client.
-	 *
-	 * @param args the command-line arguments
-	 */
-	public static void main(String[] args) 
+	//create random graph
+	public static void graphFactory()
 	{
-		StdDraw.setCanvasSize(500, 500);
-		StdDraw.setScale(0, 500);
-		//DGraph g = new DGraph();
 		graph = new DGraph();
-		graph.addNode(new node(10,new Point3D(100,100,150),0));
-		graph.addNode(new node(11,new Point3D(135,125,130),0));
-		graph.addNode(new node(12,new Point3D(120,300,200),0));
-		graph.addNode(new node(13,new Point3D(150,200,100),0));
-		graph.addNode(new node(14,new Point3D(75,250,250),0));
-		graph.addNode(new node(15,new Point3D(300,300,300),0));
-		graph.connect(10,13,3);
-		graph.connect(10,14,4);
-		graph.connect(11,10,5);
-		graph.connect(11,13,6);
-		graph.connect(12,11,7);
-		graph.connect(13,14,1);
-		graph.connect(13,12,1.5);
-		graph.connect(14,13,3.5);
-		graph.connect(12,15,10);
-		graph.connect(11,15,15);
-		//		graph2 = new Graph_Algo();
-		//		double ans = graph2.shortestPathDist(graph.getNode(10).getKey(), graph.getNode(11).getKey());
-		//		System.out.println(ans);
+		int size = 10;
+
+		for (int i = 0; i < size; i++) 
+		{
+			double p1 = Math.random()*500+1;
+			double p2 = Math.random()*500+1;
+			graph.addNode(new node(i,new Point3D(p1,p2),0));
+		}
+
+		for (int i = 0; i < size*3; i++) 
+		{
+			int src = (int)(Math.random()*size);
+			int dest = (int)(Math.random()*size);
+			if(src == dest && graph.getEdge(src, dest) != null)
+			{
+				break;
+			}
+			else
+			{				
+				graph.connect(src,dest, Math.random()*20+1);
+			}
+		}
+
+		StdDraw.setCanvasSize(800,800);
+		for (node_data nodes : graph.getV()) 
+		{
+			if(nodes.getLocation().x() > Xmax)
+			{
+				Xmax = nodes.getLocation().x();
+			}
+			if(nodes.getLocation().x() < Xmin)
+			{
+				Xmin = nodes.getLocation().x();
+			}
+			if(nodes.getLocation().y() > Ymax)
+			{
+				Ymax = nodes.getLocation().y();
+			}
+			if(nodes.getLocation().y() < Ymin)
+			{
+				Ymin = nodes.getLocation().y();
+			}
+		}
+
+		scaleX = Math.abs(Ymax+Ymin)/30;
+		scaleY = Math.abs(Xmax+Xmin)/30;
+		StdDraw.setYscale(Ymin-scaleY, Ymax+scaleY);
+		StdDraw.setXscale(Xmin-scaleX, Xmax+scaleX);
 		for (node_data nodes : graph.getV()) 
 		{
 			Point3D nodes_src = nodes.getLocation();
 			StdDraw.setPenColor(Color.BLUE);
-			StdDraw.setPenRadius(0.015);
+			StdDraw.setPenRadius(0.017);
 			StdDraw.point((int)nodes_src.x(), (int)nodes_src.y());
 			StdDraw.text((int)nodes_src.x(),(int)(nodes_src.y())+5, Integer.toString(nodes.getKey()));
+
 
 			try 
 			{
@@ -2026,7 +2261,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					int mid_of_edge_x=(int) ((nodes_src.x()+nodes_dest.x())/2);
 					int mid_of_edge_y=(int) ((nodes_src.y()+nodes_dest.y())/2);
 					StdDraw.setPenColor(BLACK);
-					StdDraw.text(mid_of_edge_x, mid_of_edge_y,Double.toString(edges.getWeight()));
+					StdDraw.text(mid_of_edge_x, mid_of_edge_y,Double.toString((int)edges.getWeight()));
 				}
 			}
 			catch(Exception e)
@@ -2034,6 +2269,117 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				//e.printStackTrace();
 			}
 		}	
+
+
+	}
+	static double Xmin = Double.POSITIVE_INFINITY;
+	static double Xmax = Double.NEGATIVE_INFINITY;
+	static double Ymin = Double.POSITIVE_INFINITY;
+	static double Ymax = Double.NEGATIVE_INFINITY;
+	static double scaleY;
+	static double scaleX;
+	//painting graph
+	public static void paintGraph()
+	{
+
+		StdDraw.setCanvasSize(800,800);
+		//StdDraw.setScale(0, 500);
+		graph = new DGraph();
+		graph.addNode(new node(10,new Point3D(100,100,150),0));
+		graph.addNode(new node(11,new Point3D(135,125,130),0));
+		graph.addNode(new node(12,new Point3D(120,300,200),0));
+		graph.addNode(new node(13,new Point3D(150,200,100),0));
+		graph.addNode(new node(14,new Point3D(75,250,250),0));
+		graph.addNode(new node(15,new Point3D(300,300,300),0));
+		graph.addNode(new node(16,new Point3D(500,100,100),0));
+		graph.connect(10,13,3);
+		graph.connect(10,14,4);
+		graph.connect(11,10,5);
+		graph.connect(11,13,6);
+		graph.connect(12,11,7);
+		graph.connect(13,14,1);
+		graph.connect(13,12,1.5);
+		graph.connect(14,13,3.5);
+		graph.connect(12,15,8);
+		graph.connect(11,15,10);
+		graph.connect(15, 16,20);
+		graph.connect(11,16,15);
+		//		graph2 = new Graph_Algo();
+		//		double ans = graph2.shortestPathDist(graph.getNode(10).getKey(), graph.getNode(11).getKey());
+		//		System.out.println(ans);
+		for (node_data nodes : graph.getV()) 
+		{
+			if(nodes.getLocation().x() > Xmax)
+			{
+				Xmax = nodes.getLocation().x();
+			}
+			if(nodes.getLocation().x() < Xmin)
+			{
+				Xmin = nodes.getLocation().x();
+			}
+			if(nodes.getLocation().y() > Ymax)
+			{
+				Ymax = nodes.getLocation().y();
+			}
+			if(nodes.getLocation().y() < Ymin)
+			{
+				Ymin = nodes.getLocation().y();
+			}
+		}
+
+		scaleX = Math.abs(Ymax+Ymin)/30;
+		scaleY = Math.abs(Xmax+Xmin)/30;
+		StdDraw.setYscale(Ymin-scaleY, Ymax+scaleY);
+		StdDraw.setXscale(Xmin-scaleX, Xmax+scaleX);
+		for (node_data nodes : graph.getV()) 
+		{
+			Point3D nodes_src = nodes.getLocation();
+			StdDraw.setPenColor(Color.BLUE);
+			StdDraw.setPenRadius(0.017);
+			StdDraw.point((int)nodes_src.x(), (int)nodes_src.y());
+			StdDraw.text((int)nodes_src.x(),(int)(nodes_src.y())+5, Integer.toString(nodes.getKey()));
+
+
+			try 
+			{
+				for(edge_data edges : graph.getE(nodes.getKey())) 
+				{
+					//draw the edges line in Red
+					StdDraw.setPenColor(Color.RED);
+					StdDraw.setPenRadius(0.005);
+					Point3D nodes_dest = graph.getNode(edges.getDest()).getLocation();
+					StdDraw.line((int)nodes_src.x(), (int)nodes_src.y(), (int)nodes_dest.x(), (int)nodes_dest.y());
+					//draw a point of the edges direction in Yellow
+					StdDraw.setPenRadius(0.015);
+					StdDraw.setPenColor(YELLOW);
+					int dir_of_edge_x=(int) ((nodes_src.x()+4*nodes_dest.x())/5);
+					int dir_of_edge_y=(int) ((nodes_src.y()+4*nodes_dest.y())/5);
+					StdDraw.point(dir_of_edge_x , dir_of_edge_y);
+					//draw the edge weight in Black
+					int mid_of_edge_x=(int) ((nodes_src.x()+nodes_dest.x())/2);
+					int mid_of_edge_y=(int) ((nodes_src.y()+nodes_dest.y())/2);
+					StdDraw.setPenColor(BLACK);
+					StdDraw.text(mid_of_edge_x, mid_of_edge_y,Double.toString((int)edges.getWeight()));
+				}
+			}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
+			}
+		}	
+	}
+	/**
+	 * Test client.
+	 *
+	 * @param args the command-line arguments
+	 */
+	public static void main(String[] args) 
+	{
+		//graphFactory();
+		paintGraph();
+		graph2.init(graph);
+		//System.out.println(graph2.isConnected());
+		//System.out.println(graph2.shortestPathDist(12, 16));
 	}
 }
 

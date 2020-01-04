@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,10 +20,10 @@ import dataStructure.node_data;
  * @author 
  *
  */
-public class Graph_Algo implements graph_algorithms
+public class Graph_Algo implements graph_algorithms,Serializable
 {
 	private graph g;
-	
+
 	public Graph_Algo()
 	{
 		;
@@ -60,28 +61,50 @@ public class Graph_Algo implements graph_algorithms
 	public void save(String file_name) 
 	{
 		try
-        {    
-            FileOutputStream file = new FileOutputStream(file_name); 
-            ObjectOutputStream out = new ObjectOutputStream(file); 
-              
-            out.writeObject(g); 
-            out.close(); 
-            file.close(); 
-              
-            System.out.println("Object has been serialized"); 
-        }   
-        catch(IOException ex) 
-        { 
-            System.out.println("IOException is caught"); 
-        } 
-		
+		{    
+			FileOutputStream file = new FileOutputStream(file_name); 
+			ObjectOutputStream out = new ObjectOutputStream(file); 
+
+			out.writeObject(g); 
+			out.close(); 
+			file.close(); 
+
+			System.out.println("Object has been serialized"); 
+		}   
+		catch(IOException ex) 
+		{ 
+			System.out.println("IOException is caught"); 
+		} 
+
 	}
 
 	@Override
 	public boolean isConnected()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		boolean isCon = false;
+		int count = 0;
+		node_data first = g.getV().iterator().next();
+		for(node_data nodes : g.getV()) // isway(first,all the nodes)
+		{
+			isCon = isWay(first.getKey(), nodes.getKey());
+			if (isCon == true)
+			{
+				count++;
+			}
+		}
+		if (count != g.nodeSize()) // num= number of all the nodes
+		{
+			return false;
+		}
+		for(node_data nodes : g.getV()) //isWay(all the nodes,first)
+		{
+			isCon = isWay(nodes.getKey(), first.getKey());
+			if (isCon == false)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean isWay(int src,int dest)
@@ -163,7 +186,6 @@ public class Graph_Algo implements graph_algorithms
 
 	@Override
 	public List<node_data> TSP(List<Integer> targets) 
-
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -173,7 +195,6 @@ public class Graph_Algo implements graph_algorithms
 	public graph copy() 
 	{
 		graph copy = new DGraph();
-		copy.
 
 		return copy;
 
