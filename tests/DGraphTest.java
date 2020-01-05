@@ -2,52 +2,111 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import dataStructure.DGraph;
 import dataStructure.edge_data;
 import dataStructure.graph;
+import dataStructure.node;
 import dataStructure.node_data;
+import utils.Point3D;
 
 public class DGraphTest {
 
-	graph g;
+	graph graph = new DGraph();
 
 	@Before
 	public void insert()
 	{
+		graph.addNode(new node(10,new Point3D(100,100,150),0));
+		graph.addNode(new node(11,new Point3D(135,125,130),0));
+		graph.addNode(new node(12,new Point3D(120,300,200),0));
+		graph.addNode(new node(13,new Point3D(150,200,100),0));
+		graph.addNode(new node(14,new Point3D(75,250,250),0));
 
+		graph.connect(10,13,0);
+		graph.connect(10,14,0);
+		graph.connect(11,10,0);
+		graph.connect(11,13,0);
+		graph.connect(12,11,0);
+		graph.connect(13,14,1);
+		graph.connect(13,12,1.5);
+		graph.connect(14,13,0);
 	}
 
 	@After
 	public void reset()
 	{
-		
+		try {
+			for (node_data node : graph.getV())
+			{
+				graph.removeNode(node.getKey());
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
 	@Test
 	public void getNodeTest()
 	{ // return the node with this key
-		fail("Not yet implemented");
+		int key = 12;
+		int key2 = 4;
+		for (node_data node : graph.getV())
+		{
+			node_data n = graph.getNode(key);
+			assertEquals(key, n.getKey());
+			try {
+				node_data n2 = graph.getNode(key2);
+				assertEquals(key2, n2.getKey());
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+			}
+		}
 	}
 
 	@Test
 	public void getEdgeTest()
 	{ // return the data of the edge (src,dest)
-		fail("Not yet implemented");
+		int src = 10;
+		int dest = 13;
+		int dest2 = 4;
+		edge_data e = graph.getEdge(src, dest);
+		assertEquals(e.getSrc(), src);
+		assertEquals(e.getDest(), dest);
+		try
+		{
+			edge_data e2 = graph.getEdge(src, dest2);
+			assertEquals(e2.getSrc(), src);
+			assertEquals(e2.getDest(), dest2);
+		}
+		catch (Exception err)
+		{
+			System.out.println(err);
+		}
 	}
 
 	@Test
 	public void addNodeTest()
 	{
-		g.addNode(n);
+		node_data n = new node(4,new Point3D(70,110,130),0);
+		int size = graph.getV().size();
+		graph.addNode(n);
+		int newSize = graph.getV().size();
+		assertEquals(size+1, newSize);
 	}
 
 	@Test
-	public void connectTest()
+	public void connectTest() //
 	{
 		fail("Not yet implemented");
 	}
@@ -55,43 +114,94 @@ public class DGraphTest {
 	@Test
 	public void getVTest()
 	{
-		fail("Not yet implemented");
+		Collection <node_data> col = graph.getV();
+		assertEquals(graph.nodeSize(), col.size());
 	}
 
 	@Test
 	public void getETest()
 	{
-		fail("Not yet implemented");
+		Collection <edge_data> col = null;
+		try
+		{
+		for (node_data node : graph.getV())
+		{
+			col.addAll(graph.getE(node.getKey()));
+		}
+		assertEquals(graph.edgeSize(), col.size());
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
 	@Test
 	public void removeNodeTest()
 	{
-		fail("Not yet implemented");
+		int key = 10;
+		int key2 = 4;
+		int size = graph.nodeSize();
+		graph.removeNode(key);
+		assertEquals(graph.nodeSize(), size-1);
+		try {
+			int size2 = graph.nodeSize();
+			graph.removeNode(key2);
+			assertNotEquals(graph.nodeSize(), size2);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
 	@Test
 	public void removeEdgeTest()
 	{
-		fail("Not yet implemented");
+		int src = 10;
+		int dest = 13;
+		int dest2 = 3;
+		edge_data e = graph.getEdge(src, dest);
+		int size = graph.edgeSize();
+		graph.removeEdge(src, dest);
+		assertEquals(graph.edgeSize(), size-1);
+		try
+		{
+			int size2 = graph.edgeSize();
+			edge_data e2 = graph.getEdge(src, dest2);
+			graph.removeEdge(src, dest2);
+			assertEquals(graph.edgeSize(), size2);
+		}
+		catch (Exception err)
+		{
+			System.out.println(err);
+		}
 	}
 
 	@Test
 	public void nodeSizeTest()
 	{
-		fail("Not yet implemented");
+		assertEquals(graph.getV().size(), graph.nodeSize());
 	}
 
 	@Test
 	public void edgeSizeTest()
 	{
-		fail("Not yet implemented");
+		int size = 0;
+		for (node_data node : graph.getV())
+		{
+			size += graph.getE(node.getKey()).size();
+		}
+		assertEquals(graph.edgeSize(), size);
 	}
 
 	@Test
 	public void getMCTest()
 	{
-		fail("Not yet implemented");
+		int MC = graph.getMC();
+		node_data n = new node(4,new Point3D(70,110,130),0);
+		graph.addNode(n);
+		assertEquals(graph.getMC(), MC+1);
 	}
 
 }

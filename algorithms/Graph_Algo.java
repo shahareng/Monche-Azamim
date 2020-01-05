@@ -112,19 +112,32 @@ public class Graph_Algo implements graph_algorithms
 
 	public boolean isWay(int src,int dest)
 	{
-		for(Iterator<edge_data> iter=g.getE(src).iterator();iter.hasNext();) 
-		{
-			edge_data ed = iter.next();
-			if(ed.getDest() == dest)
+		boolean flag = false;
+		g.getNode(src).setInfo("visit");
+		try {
+			for(Iterator<edge_data> iter=g.getE(src).iterator();iter.hasNext();) 
 			{
-				return true;
+				edge_data ed = iter.next();
+				if (!g.getNode(ed.getDest()).getInfo().equals("visit"))
+				{
+					if(ed.getDest() == dest)
+					{
+						return true;
+					}
+					else {
+						if(!flag && isWay(ed.getDest(), dest))
+						{
+						flag = true;
+						}
+					}
+				}
 			}
-			else if(isWay(ed.getDest(),dest))
-			{
-				return true;
-			}
+			return flag;
 		}
-		return false;
+		catch (Exception e)
+		{
+			return false;
+		}
 	}
 	@Override
 	public double shortestPathDist(int src, int dest) 
@@ -171,7 +184,7 @@ public class Graph_Algo implements graph_algorithms
 							{
 								nd.setWeight(minWnode.getWeight()+ed.getWeight());
 								nd.setInfo(minWnode.getKey()+"");
-								nd.setTag(minWnode.getKey());
+								nd.setTag(minWnode.getKey()); // tag = the key of the prev node
 								iterNode.remove();
 							}
 						}

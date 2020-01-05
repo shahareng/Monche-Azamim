@@ -8,8 +8,7 @@ public class node implements node_data
 	Point3D location;
 	double weight;
 	String info;
-	int tag;
-//	node_data prev;
+	int tag; // is the prev key
 	
 	public node(int key, Point3D p,double w)
 	{
@@ -71,15 +70,5 @@ public class node implements node_data
 	{
 		this.tag = t;
 	}
-	
-//	public node_data getPrev() 
-//	{
-//		return this.prev;
-//	}
-//
-//	public void setPrev(node_data p)
-//	{
-//		this.prev = p;
-//	}
 
 }

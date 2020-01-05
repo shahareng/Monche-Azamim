@@ -143,7 +143,7 @@ public class DGraph implements graph
 	@Override
 	public edge_data removeEdge(int src, int dest)
 	{
-		if(!E.containsKey(src) || !E.get(src).containsKey(dest))
+		if(!E.containsKey(src) && !E.get(src).containsKey(dest))
 		{
 			try 
 			{
