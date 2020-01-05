@@ -228,12 +228,8 @@ public class Graph_Algo implements graph_algorithms,Serializable
 				}
 				while (!edges.isEmpty())
 				{
+					boolean flag = false;
 					ed = edges.iterator().next();
-					node_data ned = new node (ed.getDest(),null);
-					if (!(nodes.contains(ned)))
-					{
-						edges.remove(ed);
-					}
 					for(Iterator<node_data> iter = nodes.iterator();iter.hasNext();) 
 					{ //find the dest node
 						node_data nd = iter.next();
@@ -245,9 +241,14 @@ public class Graph_Algo implements graph_algorithms,Serializable
 								nd.setInfo(minWnode.getKey()+"");
 								nd.setTag(minWnode.getKey());
 								edges.remove(ed);
+								flag = true;
 								break;
 							}
 						}
+					}
+					if (!flag)
+					{
+						edges.remove(ed);
 					}
 				}
 				nodes.remove(minWnode);
@@ -275,21 +276,25 @@ public class Graph_Algo implements graph_algorithms,Serializable
 			if(nd.getKey() == src)
 				sr = nd;
 			if(nd.getKey() == dest)
+			{
+				node.add(nd);
 				des = nd;
+			}
 		}
 		nd = des;
 		while (nd.getKey() != src) {
-			node.add(nd);
 			for(Iterator<node_data> iter=g.getV().iterator();iter.hasNext();) 
 			{
 				prev = iter.next();
 				if(prev.getKey() == nd.getTag())
 				{
+					node.add(prev);
 					nd = prev;
+					break;
 				}
 			}
 		}
-		node.add(sr);
+//		node.add(sr);
 		Collections.reverse(node);
 		return node;
 	}

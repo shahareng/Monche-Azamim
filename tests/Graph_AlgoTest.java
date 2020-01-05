@@ -19,10 +19,10 @@ import dataStructure.node_data;
 import utils.Point3D;
 
 public class Graph_AlgoTest {
-	
+
 	static Graph_Algo G = new Graph_Algo();
 	static graph graph =new DGraph();
-	
+
 	@BeforeClass
 	public static void insert()
 	{
@@ -40,7 +40,7 @@ public class Graph_AlgoTest {
 		graph.connect(10, 12, 10);
 		graph.connect(12, 10, 10);
 	}
-	
+
 	@AfterClass
 	public static void reset()
 	{
@@ -56,41 +56,43 @@ public class Graph_AlgoTest {
 
 		}
 	}
-	
+
 	@Before
 	public void set()
 	{
-		
+
 	}
-	
+
 	@After
 	public void finish()
 	{
-		
+
 	}
 
 	@Test
-	public void TestInit() {
+	public void TestInit()
+	{
 		G.init(graph);
 	}
-	
+
 	@Test
 	public void TestCopy()
 	{
-		grap
+		graph copy = G.copy();
+		assertEquals(copy, G);
 	}
-	
+
 	@Test
 	public void TestInitStringFile()
 	{
 		String fileTest = "initTest.txt";
 		G.init(fileTest);
-	
-			String fileTest2 = "initError.txt";
-			G.init(fileTest);
-		
+
+		String fileTest2 = "initError.txt";
+		G.init(fileTest);
+
 	}
-	
+
 	@Test
 	public void TestSave()
 	{
@@ -103,18 +105,17 @@ public class Graph_AlgoTest {
 	{
 		assertTrue(G.isConnected());
 	}
-	
+
 	@Test
 	public void TestShortestPathDist()
 	{
 		int path = 4;
 		assertEquals(path, G.shortestPathDist(16, 12), 0.00001);
 	}
-	
+
 	@Test
 	public void TestShortestPath()
 	{
-		List<node_data> path2 = G.shortestPath(16, 12);
 		List<node_data> path = new ArrayList<>();
 		node_data nd1 = new node(16,new Point3D(500,100,100),0);
 		node_data nd2 = new node(15,new Point3D(300,300,300),0);
@@ -122,12 +123,13 @@ public class Graph_AlgoTest {
 		path.add(nd1);
 		path.add(nd2);
 		path.add(nd3);
+		List<node_data> path2 = G.shortestPath(16,12);
 		for(int i=0; i<path.size(); i++)
 		{
 			assertEquals(path.get(i), path2.get(i));
 		}
 	}
-	
+
 	@Test
 	public void TestTSP()
 	{
@@ -143,7 +145,7 @@ public class Graph_AlgoTest {
 		path.add(nd2);
 		path.add(nd3);
 		List<node_data> TSP = G.TSP(tsp);
-		
+
 		for(int i=0; i<path.size(); i++)
 		{
 			assertEquals(path.get(i).getKey(), TSP.get(i));
