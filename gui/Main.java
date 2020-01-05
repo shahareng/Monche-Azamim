@@ -1,9 +1,14 @@
 package gui;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
+import dataStructure.edge_data;
 import dataStructure.graph;
 import dataStructure.node;
 import dataStructure.node_data;
@@ -18,31 +23,42 @@ public class Main
 		graph graph =new DGraph();
 
 		graph.addNode(new node(10,new Point3D(100,100,150),0));
-		graph.addNode(new node(11,new Point3D(135,125,130),0));
+//		graph.addNode(new node(11,new Point3D(135,125,130),0));
 		graph.addNode(new node(12,new Point3D(120,300,200),0));
-		graph.addNode(new node(13,new Point3D(150,200,100),0));
-		graph.addNode(new node(14,new Point3D(75,250,250),0));
+		//graph.addNode(new node(13,new Point3D(150,200,100),0));
+		//graph.addNode(new node(14,new Point3D(75,250,250),0));
 		graph.addNode(new node(15,new Point3D(300,300,300),0));
 		graph.addNode(new node(16,new Point3D(500,100,100),0));
 
-		graph.connect(10,13,3);
-		graph.connect(10,14,4);
-		graph.connect(11,10,5);
-		graph.connect(11,13,6);
-		graph.connect(12,11,7);
-		graph.connect(13,14,1);
-		graph.connect(13,12,1.5);
-		graph.connect(14,13,3.5);
-		graph.connect(12,15,8);
-		graph.connect(11,15,10);
-		graph.connect(15, 16,20);
-		graph.connect(11,16,15);
-		G.init(graph);
+		graph.connect(16, 15, 1);
+		graph.connect(16, 10, 5);
+		graph.connect(15, 16, 10);
+		graph.connect(15, 12, 3);
+		graph.connect(12, 15, 10);
+		graph.connect(10, 16, 10);
+		graph.connect(10, 12, 10);
+		graph.connect(12, 10, 10);
+//		graph.connect(10, 11, 10);
+//		graph.connect(11, 10, 10);
 		
 
-		//System.out.println(G.isConnected());
-		System.out.println(G.shortestPathDist(10, 14));
-		//System.out.println(G.shortestPath(10, 14));
+		G.init(graph);
+		
+		System.out.println(G.isWay(10, 15));
+		System.out.println(G.isConnected());
+		System.out.println(G.shortestPathDist(16, 12));
+		System.out.println(G.shortestPath(16, 12));
+		List<node_data> sp =  G.shortestPath(16, 12);
+		List<Integer> tsp =  new ArrayList<Integer>();
+		tsp.add(15);
+		tsp.add(12);
+		tsp.add(16);
+		G.TSP(tsp);
+		
+		for (node_data node : sp) 
+		{ 
+			System.out.println(node.getKey());
+		}
 		GUI window = new GUI(graph);
 		window.setVisible(true);
 

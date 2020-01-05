@@ -3,7 +3,6 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Before;
@@ -57,6 +56,7 @@ public class DGraphTest {
 		catch (Exception e)
 		{
 			System.out.println(e);
+
 		}
 	}
 
@@ -109,6 +109,7 @@ public class DGraphTest {
 		graph.addNode(n);
 		int newSize = graph.getV().size();
 		assertEquals(size+1, newSize);
+
 	}
 
 	@Test

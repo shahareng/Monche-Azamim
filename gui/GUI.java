@@ -53,14 +53,11 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 		MenuBar MB=new MenuBar();this.setMenuBar(MB);
 		Menu File = new Menu("File");
 		Menu algo = new Menu("algo");
-		Menu op = new Menu("operation");
-
 
 		//creating the bar tabs
 
 		MB.add(File);
 		MB.add(algo);
-		MB.add(op);
 
 		//file tab\\
 		MenuItem Save = new MenuItem("Save");     
@@ -86,19 +83,6 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 		MenuItem TSP = new MenuItem("TSP");			
 		TSP.addActionListener(this);
 		
-		//operation tab
-		
-		MenuItem addV = new MenuItem("add vertix");
-		addV.addActionListener(this);
-		
-		MenuItem addEdge = new MenuItem("add edge");
-		addEdge.addActionListener(this);
-		
-		MenuItem removeV = new MenuItem("remove vertix");
-		removeV.addActionListener(this);
-
-		MenuItem removeEdge = new MenuItem("remove edge");
-		removeEdge.addActionListener(this);
 		//adding to tabs;
 		//file
 		File.add(Save);
@@ -110,12 +94,6 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 		algo.add(TSP);
 		algo.add(isConnected);
 		algo.add(ShortPathDist);
-		
-		//operation
-		op.add(addV);
-		op.add(addEdge);
-		op.add(removeV);
-		op.add(removeEdge);
 	}
 
 	public void paint(Graphics g)
@@ -131,8 +109,8 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 			Point3D nodes_src =temp.getLocation();
 
 			g.setColor(Color.BLUE);
-			g.fillOval((int)nodes_src.x(), (int)nodes_src.y(),10,10);
-			g.drawString(Integer.toString(temp.getKey()),(int)nodes_src.x(),(int)(nodes_src.y())+5);
+			g.fillOval((int)nodes_src.ix()-3, (int)nodes_src.iy()-5,10,10);
+			g.drawString(Integer.toString(temp.getKey()),(int)nodes_src.x()-7,(int)(nodes_src.y())-7);
 
 
 			this.edges = graph.getE(temp.getKey());
@@ -152,10 +130,10 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 						nodes_dest.ix(), nodes_dest.iy());
 				//draw a point of the edges direction in Yellow
 				g.setColor(Color.YELLOW);
-				int dir_of_edge_x=(int) ((nodes_src.x()+4*nodes_dest.x())/5);
-				int dir_of_edge_y=(int) ((nodes_src.y()+4*nodes_dest.y())/5);
+				int dir_of_edge_x=(int) ((nodes_src.x() + 4*nodes_dest.x())/5);
+				int dir_of_edge_y=(int) ((nodes_src.y() + 4*nodes_dest.y())/5);
 
-				g.fillOval(dir_of_edge_x , dir_of_edge_y,10,10);
+				g.fillOval(dir_of_edge_x-3 , dir_of_edge_y-5,10,10);
 
 				//draw the edge weight in Black
 				int mid_of_edge_x=(int) ((nodes_src.x()+nodes_dest.x())/2);
@@ -180,11 +158,11 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 			g.setColor(Color.BLACK);
 			if(G.isConnected())
 			{
-				g.drawString("The graph is connected", 300, 300);
+				g.drawString("The graph is connected", 100, 700);
 			}
 			else
 			{
-				g.drawString("The graph is NOT connected", 300, 300);
+				g.drawString("The graph is NOT connected", 100, 700);
 			}
 			Choice = 0;
 		}
@@ -304,7 +282,14 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 				}
 			}
 
-			vToPaint.addAll(G.TSP(tsp));
+			try
+			{				
+				vToPaint.addAll(G.TSP(tsp));
+			}catch(Exception ex)
+			{
+				System.out.println("Empty list");
+			}
+				
 
 			Choice =3;
 			repaint();
@@ -350,50 +335,6 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 			Choice = 1;
 			repaint();
 		}
-		
-		if(e.getActionCommand().equals("add vertix"))
-		{
-			Choice = 0;
-			repaint();
-			int v1 = 0;
-			
-			JFrame f1 = new JFrame();
-			String v = JOptionPane.showInputDialog(f1,"Enter vertix id");
-			try
-			{
-				v1 = Integer.parseInt(v);
-				Point3D p = new Point3D(1,1);
-				node_data n = new node(v1,p);
-				graph.addNode(n);
-				
-			}catch(Exception ex) {};
-		}
-		
-		if(e.getActionCommand().equals("add edge"))
-		{
-			
-		}
-		
-		if(e.getActionCommand().equals("remove vertix"))
-		{
-			
-		}
-		
-		if(e.getActionCommand().equals("remve edge"))
-		{
-			
-		}
-
-//		public Point3D nodeCreator(double x,double y)
-//		{
-//				
-//			return null;
-//		}
-
-
-
-
-
 	}
 	
 	@Override

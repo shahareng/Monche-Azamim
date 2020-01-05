@@ -168,32 +168,6 @@ public class Graph_Algo implements graph_algorithms,Serializable
 	@Override
 	public double shortestPathDist(int src, int dest) 
 	{
-//		  = g.getV()
-//		Vertex2 s = vertices[source];
-//		s.dist = 0.;
-//		HeapMin Q = new HeapMin();
-//		Q.minHeapInsert(s);
-//		//O(nlogn)
-//		for (int i=1; i<vertices.length; i++){//O(n)
-//			Q.minHeapInsert(vertices[i]);//O(logn)
-//		}
-//		//O(nlogn) + O(mlogn) = O((m+n)logn)
-//		while (!Q.isEmpty()) {//O(m)
-//			Vertex2 u = Q.heapExtractMin();//O(logn)
-//			// Visit each edge exiting u
-//			for (Edge2 e : u.edges){
-//				Vertex2 v = vertices[e.vert];
-//				if (!v.visited){
-//					double distU = u.dist + e.weight;
-//					if (distU < v.dist) {//relaxation
-//						v.dist = distU ;
-//						v.previous = vertices[u.name].name;
-//						Q.heapDecreaseKey(v);//O(logn)
-//					}
-//				}
-//			}
-//			u.visited = true;
-//		}
 		node_data minWnode = null;
 		
 		for(Iterator<node_data> iter=g.getV().iterator();iter.hasNext();) 
