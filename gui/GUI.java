@@ -42,6 +42,7 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 		this.graph = g; 
 		this.G.init(g);
 		initGUI();
+		((java.util.Observable) graph).addObserver(this);
 
 	}
 	private void initGUI()
@@ -143,6 +144,7 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 			}
 		}
 
+		//shortest path distance
 		if(Choice == 1)
 		{
 			g.setColor(Color.BLACK);
@@ -153,6 +155,7 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 			}
 		}
 
+		//isConnected function
 		if(Choice == 2) 
 		{
 			g.setColor(Color.BLACK);
@@ -203,6 +206,8 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 
 		if(e.getActionCommand().equals("Load")) 
 		{
+			Choice = 0;
+			repaint();
 			FileDialog chooser = new FileDialog(frame, "Use a .png or .jpg extension", FileDialog.LOAD);
 			chooser.setVisible(true);
 			String filename = chooser.getDirectory()+chooser.getFile();
@@ -231,13 +236,13 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 
 			vToPaint.clear();
 			JFrame f1 = new JFrame();
-			String v1 = JOptionPane.showInputDialog(f1,"Enter source vertix");
+			String v1 = JOptionPane.showInputDialog(f1,"Enter source id");
 			int v_src = 0;
 			int v_dest = 0;
 			
 			if(v1!="") 
 			{
-				String v2 = JOptionPane.showInputDialog(f1,"Enter destination vertix");
+				String v2 = JOptionPane.showInputDialog(f1,"Enter destination id");
 				if(v2!="") 
 				{
 					try
@@ -272,7 +277,15 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 				try
 				{
 					int v_TSP = Integer.parseInt(s_TSP);
-					if((graph.getNode(v_TSP) != null ) && !tsp.contains(v_TSP))
+					if(graph.getNode(v_TSP) == null )
+					{
+						System.out.println("not a vertix");
+					}
+					else if(tsp.contains(v_TSP))
+					{
+						System.out.println("already in the TSP list");
+					}
+					else
 					{
 						tsp.add(v_TSP);
 					}
@@ -284,7 +297,7 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 
 			try
 			{				
-				vToPaint.addAll(G.TSP(tsp));
+				vToPaint = G.TSP(tsp);
 			}catch(Exception ex)
 			{
 				System.out.println("Empty list");

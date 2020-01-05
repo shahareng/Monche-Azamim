@@ -56,7 +56,7 @@ public class DGraph extends Observable implements graph, Serializable
 		this.V.put(n.getKey(), n);
 		MC++;
 		setChanged();
-		notifyObservers();
+		notifyObservers(n);
 	}
 
 	@Override
@@ -77,6 +77,7 @@ public class DGraph extends Observable implements graph, Serializable
 				if (E.get(src).get(dest) != null) 
 				{
 					System.out.println("The edge is already exsit");
+					return;
 					//throw new RuntimeException("The edge is already exist!");
 				}
 				else 
@@ -85,6 +86,8 @@ public class DGraph extends Observable implements graph, Serializable
 					this.E.get(src).put(dest, edge);
 					MC++;
 					ESize++;
+					setChanged();
+					notifyObservers();
 				}
 			} 
 			else 
@@ -94,6 +97,8 @@ public class DGraph extends Observable implements graph, Serializable
 				this.E.get(src).put(dest, edge);
 				MC++;
 				ESize++;
+				setChanged();
+				notifyObservers();
 			}
 		} 
 		else if(b)
@@ -101,14 +106,12 @@ public class DGraph extends Observable implements graph, Serializable
 			System.out.println("src/dest does not exist");
 			//throw new RuntimeException("src/dest does not exist!");
 		}
-		setChanged();
-		notifyObservers();
 	}
 
 	@Override
 	public Collection<node_data> getV() 
-	{	
-		return this.V.values();
+	{	Collection<node_data> copyV = this.V.values();
+		return copyV;
 	}
 
 	@Override
@@ -116,7 +119,8 @@ public class DGraph extends Observable implements graph, Serializable
 	{
 		if(!E.containsKey(node_id)) {return null;}
 		
-		return this.E.get(node_id).values();
+		Collection<edge_data> copyE = this.E.get(node_id).values();
+		return copyE;
 	}
 
 	@Override
