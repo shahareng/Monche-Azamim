@@ -88,34 +88,42 @@ public class Graph_Algo implements graph_algorithms,Serializable
 	@Override
 	public boolean isConnected()
 	{
-		if(g.getV().size()==0){
+		if(g.getV().size()== 0 || g.getV().size() == 1)
+		{
 			return true;
 		}
-		int conutTag = 0;
-		boolean NullSrcNode = true;
-		for (node_data nd : g.getV()) {
+		
+		int tag = 0;
+		boolean flag = true;
+		
+		for (node_data nd : g.getV())
+		{
 			nd.setTag(0);
 		}
-		Queue<Integer> q = new LinkedList<>();
+		
+		Queue<Integer> Q = new LinkedList<>();
 		node_data first = g.getV().iterator().next();
-		q.add(first.getKey());
-		while (!q.isEmpty()) {
-			int peek = q.peek();
-			try {
-				for (edge_data e : g.getE(peek)) {
-					if (g.getNode(e.getDest()).getTag() == 0) {
-						g.getNode(e.getDest()).setTag(1);
-						conutTag++;
-						q.add(e.getDest());
+		Q.add(first.getKey());
+		while (!Q.isEmpty()) 
+		{
+			int peek = Q.peek();
+			try 
+			{
+				for (edge_data edge : g.getE(peek)) 
+				{
+					if (g.getNode(edge.getDest()).getTag() == 0) 
+					{
+						g.getNode(edge.getDest()).setTag(1);
+						tag++;
+						Q.add(edge.getDest());
 					}
 				}
-			} catch (Exception e) {
-				//this node has no edges
-				NullSrcNode = false;
-			}
-			q.poll();
+			} catch (Exception e) {flag = false;}
+			
+			Q.poll();
 		}
-		if (conutTag == g.nodeSize() && NullSrcNode) {
+		if (tag == g.nodeSize() && flag)
+		{
 			return true;
 		}
 		return false;
@@ -140,7 +148,7 @@ public class Graph_Algo implements graph_algorithms,Serializable
 			{
 				edge_data ed = iter.next();
 				String temp  = g.getNode(ed.getDest()).getInfo();
-				//System.out.println(temp);
+		
 				if(!temp.equals("visit"))
 				{				
 					if(ed.getDest() == dest)
@@ -165,35 +173,10 @@ public class Graph_Algo implements graph_algorithms,Serializable
 		}
 		return flag;
 	}
+	
 	@Override
 	public double shortestPathDist(int src, int dest) 
 	{
-//		  = g.getV()
-//		Vertex2 s = vertices[source];
-//		s.dist = 0.;
-//		HeapMin Q = new HeapMin();
-//		Q.minHeapInsert(s);
-//		//O(nlogn)
-//		for (int i=1; i<vertices.length; i++){//O(n)
-//			Q.minHeapInsert(vertices[i]);//O(logn)
-//		}
-//		//O(nlogn) + O(mlogn) = O((m+n)logn)
-//		while (!Q.isEmpty()) {//O(m)
-//			Vertex2 u = Q.heapExtractMin();//O(logn)
-//			// Visit each edge exiting u
-//			for (Edge2 e : u.edges){
-//				Vertex2 v = vertices[e.vert];
-//				if (!v.visited){
-//					double distU = u.dist + e.weight;
-//					if (distU < v.dist) {//relaxation
-//						v.dist = distU ;
-//						v.previous = vertices[u.name].name;
-//						Q.heapDecreaseKey(v);//O(logn)
-//					}
-//				}
-//			}
-//			u.visited = true;
-//		}
 		node_data minWnode = null;
 		
 		for(Iterator<node_data> iter=g.getV().iterator();iter.hasNext();) 
@@ -246,7 +229,8 @@ public class Graph_Algo implements graph_algorithms,Serializable
 				while (!edges.isEmpty())
 				{
 					ed = edges.iterator().next();
-					if (!nodes.contains(ed.getDest()))
+					node_data ned = new node (ed.getDest(),null);
+					if (!(nodes.contains(ned)))
 					{
 						edges.remove(ed);
 					}

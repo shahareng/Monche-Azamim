@@ -32,10 +32,10 @@ public class Main
 
 		graph.connect(16, 15, 1);
 		graph.connect(16, 10, 5);
-		graph.connect(15, 16, 10);
+		graph.connect(15, 16, 1);
 		graph.connect(15, 12, 3);
-		graph.connect(12, 15, 10);
-		graph.connect(10, 16, 10);
+		graph.connect(12, 15, 3);
+		graph.connect(10, 16, 5);
 		graph.connect(10, 12, 10);
 		graph.connect(12, 10, 10);
 //		graph.connect(10, 11, 10);
@@ -46,19 +46,26 @@ public class Main
 		
 		System.out.println(G.isWay(10, 15));
 		System.out.println(G.isConnected());
-		System.out.println(G.shortestPathDist(16, 12));
-		System.out.println(G.shortestPath(16, 12));
-		List<node_data> sp =  G.shortestPath(16, 12);
-		List<Integer> tsp =  new ArrayList<Integer>();
-		tsp.add(15);
-		tsp.add(12);
-		tsp.add(16);
-		G.TSP(tsp);
-		
+		System.out.println(G.shortestPathDist(10, 15));
+		List<node_data> sp =  G.shortestPath(10, 15);
+		System.out.print("ShortestPath: ");
 		for (node_data node : sp) 
 		{ 
-			System.out.println(node.getKey());
+			System.out.print(node.getKey()+",");
 		}
+//		System.out.println();
+//		List<Integer> tsp =  new ArrayList<Integer>();
+//		tsp.add(15);
+//		tsp.add(12);
+//		tsp.add(16);
+//		G.TSP(tsp);
+//		System.out.println();
+//		System.out.print("TSP: ");
+//		for (node_data node : sp) 
+//		{ 
+//			System.out.print(node.getKey()+",");
+//		}
+//		System.out.println();
 		GUI window = new GUI(graph);
 		window.setVisible(true);
 

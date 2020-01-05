@@ -139,7 +139,7 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 				int mid_of_edge_x=(int) ((nodes_src.x()+nodes_dest.x())/2);
 				int mid_of_edge_y=(int) ((nodes_src.y()+nodes_dest.y())/2);
 				g.setColor(Color.BLACK);
-				g.drawString(temp1.getWeight()+"",mid_of_edge_x, mid_of_edge_y);
+				g.drawString(Double.toString((int)temp1.getWeight()),mid_of_edge_x, mid_of_edge_y);
 			}
 		}
 
