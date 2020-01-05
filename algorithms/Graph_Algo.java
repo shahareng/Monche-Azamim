@@ -88,34 +88,42 @@ public class Graph_Algo implements graph_algorithms,Serializable
 	@Override
 	public boolean isConnected()
 	{
-		if(g.getV().size()==0){
+		if(g.getV().size()== 0 || g.getV().size() == 1)
+		{
 			return true;
 		}
-		int conutTag = 0;
-		boolean NullSrcNode = true;
-		for (node_data nd : g.getV()) {
+		
+		int tag = 0;
+		boolean flag = true;
+		
+		for (node_data nd : g.getV())
+		{
 			nd.setTag(0);
 		}
-		Queue<Integer> q = new LinkedList<>();
+		
+		Queue<Integer> Q = new LinkedList<>();
 		node_data first = g.getV().iterator().next();
-		q.add(first.getKey());
-		while (!q.isEmpty()) {
-			int peek = q.peek();
-			try {
-				for (edge_data e : g.getE(peek)) {
-					if (g.getNode(e.getDest()).getTag() == 0) {
-						g.getNode(e.getDest()).setTag(1);
-						conutTag++;
-						q.add(e.getDest());
+		Q.add(first.getKey());
+		while (!Q.isEmpty()) 
+		{
+			int peek = Q.peek();
+			try 
+			{
+				for (edge_data edge : g.getE(peek)) 
+				{
+					if (g.getNode(edge.getDest()).getTag() == 0) 
+					{
+						g.getNode(edge.getDest()).setTag(1);
+						tag++;
+						Q.add(edge.getDest());
 					}
 				}
-			} catch (Exception e) {
-				//this node has no edges
-				NullSrcNode = false;
-			}
-			q.poll();
+			} catch (Exception e) {flag = false;}
+			
+			Q.poll();
 		}
-		if (conutTag == g.nodeSize() && NullSrcNode) {
+		if (tag == g.nodeSize() && flag)
+		{
 			return true;
 		}
 		return false;
@@ -140,7 +148,7 @@ public class Graph_Algo implements graph_algorithms,Serializable
 			{
 				edge_data ed = iter.next();
 				String temp  = g.getNode(ed.getDest()).getInfo();
-				//System.out.println(temp);
+		
 				if(!temp.equals("visit"))
 				{				
 					if(ed.getDest() == dest)
@@ -165,6 +173,7 @@ public class Graph_Algo implements graph_algorithms,Serializable
 		}
 		return flag;
 	}
+	
 	@Override
 	public double shortestPathDist(int src, int dest) 
 	{
@@ -220,7 +229,8 @@ public class Graph_Algo implements graph_algorithms,Serializable
 				while (!edges.isEmpty())
 				{
 					ed = edges.iterator().next();
-					if (!nodes.contains(ed.getDest()))
+					node_data ned = new node (ed.getDest(),null);
+					if (!(nodes.contains(ned)))
 					{
 						edges.remove(ed);
 					}
