@@ -46,8 +46,9 @@ public class Main
 		
 		System.out.println(G.isWay(10, 15));
 		System.out.println(G.isConnected());
-		//System.out.println(G.shortestPathDist(10, 15));
-		List<node_data> sp =  G.shortestPath(10, 15);
+
+		System.out.println(G.shortestPathDist(12, 15));
+		List<node_data> sp =  G.shortestPath(12, 16);
 		System.out.print("ShortestPath: ");
 		for (node_data node : sp) 
 		{ 
