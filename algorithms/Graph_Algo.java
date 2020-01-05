@@ -35,6 +35,10 @@ public class Graph_Algo implements graph_algorithms,Serializable
 	{
 		;
 	}
+	public Graph_Algo(graph g)
+	{
+		this.g = g;
+	}
 	@Override
 	public void init(graph g)
 	{

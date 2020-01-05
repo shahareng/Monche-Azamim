@@ -1,4 +1,4 @@
-package tests;
+package Tests;
 
 import static org.junit.Assert.*;
 
@@ -85,12 +85,7 @@ public class Graph_AlgoTest {
 	@Test
 	public void TestInitStringFile()
 	{
-		String fileTest = "initTest.txt";
-		G.init(fileTest);
-
-		String fileTest2 = "initError.txt";
-		G.init(fileTest);
-
+		G.init("initS");
 	}
 
 	@Test
@@ -103,12 +98,14 @@ public class Graph_AlgoTest {
 	@Test
 	public void TestIsConnected()
 	{
+		G.init(graph);
 		assertTrue(G.isConnected());
 	}
 
 	@Test
 	public void TestShortestPathDist()
 	{
+		G.init(graph);
 		int path = 4;
 		assertEquals(path, G.shortestPathDist(16, 12), 0.00001);
 	}
@@ -116,6 +113,7 @@ public class Graph_AlgoTest {
 	@Test
 	public void TestShortestPath()
 	{
+		G.init(graph);
 		List<node_data> path = new ArrayList<>();
 		node_data nd1 = new node(16,new Point3D(500,100,100),0);
 		node_data nd2 = new node(15,new Point3D(300,300,300),0);
@@ -133,6 +131,7 @@ public class Graph_AlgoTest {
 	@Test
 	public void TestTSP()
 	{
+		G.init(graph);
 		List<Integer> tsp =  new ArrayList<Integer>();
 		tsp.add(15);
 		tsp.add(12);

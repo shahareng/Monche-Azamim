@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import dataStructure.*;
-public class GUI extends JFrame implements ActionListener , MouseListener , Observer
+public class GUI extends JFrame implements ActionListener , MouseListener , Observer, Runnable
 {
 	graph graph; 
 	Graph_Algo ga; 
@@ -427,10 +427,17 @@ public class GUI extends JFrame implements ActionListener , MouseListener , Obse
 		}
 		return gr;
 	}
+	
+	@Override
+	public void run()
+	{
+		repaint();
+	}
 	@Override
 	public void update(java.util.Observable o, Object arg) 
 	{
 		repaint();
+		run();
 		
 	}
 }
