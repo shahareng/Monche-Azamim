@@ -18,6 +18,7 @@ public class node implements node_data,Serializable
 		this.key = key;
 		this.location = p;
 		this.weight = w;
+		this.info = "not visit";
 	}
 	
 	public node(int key,Point3D p)
@@ -25,6 +26,7 @@ public class node implements node_data,Serializable
 		this.key = key;
 		this.location = p;
 		this.weight = 0;
+		this.info = "not visit";
 	}
 	
 	@Override

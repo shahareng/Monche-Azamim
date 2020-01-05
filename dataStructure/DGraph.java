@@ -70,7 +70,7 @@ public class DGraph extends Observable implements graph, Serializable
 			b = false;
 			return;
 		}
-		if (b||(!(V.get(src) == null) || !(V.get(dest) == null))) 
+		if (b||(!(V.get(src) == null) && !(V.get(dest) == null))) 
 		{
 			if (E.containsKey(src))
 			{
@@ -170,7 +170,7 @@ public class DGraph extends Observable implements graph, Serializable
 	@Override
 	public edge_data removeEdge(int src, int dest)
 	{
-		if(!E.containsKey(src) || !E.get(src).containsKey(dest))
+		if(!V.containsKey(src) || !V.containsKey(dest))
 		{
 			return null;
 		}

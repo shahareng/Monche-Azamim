@@ -40,7 +40,8 @@ class Edge2{
 public class Dijkstra2 {
 	Vertex2[] vertices;
 	int source;
-	public Dijkstra2(Vertex2[] vs, int source){
+	public Dijkstra2(Vertex2[] vs, int source)
+	{
 		this.source = source;
 		vertices = new   Vertex2[vs.length];
 		for (int i=0; i<vs.length; i++){
