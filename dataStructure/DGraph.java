@@ -2,11 +2,15 @@ package dataStructure;
 
 import java.awt.List;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Observable;
 
-public class DGraph implements graph
+public class DGraph extends Observable implements graph, Serializable
 {
 	HashMap<Integer,node_data> V = new HashMap<>();
 	HashMap<Integer,HashMap<Integer,edge_data>> E = new HashMap<>();
@@ -18,10 +22,12 @@ public class DGraph implements graph
 		;
 	}
 
-	public DGraph(HashMap<Integer,node_data>V,HashMap<Integer,HashMap<Integer,edge_data>>E)
+	public DGraph(HashMap<Integer,node_data>V,HashMap<Integer,HashMap<Integer,edge_data>>E,int mc,int esize)
 	{
 		this.V.putAll(V);
 		this.E.putAll(E);
+		this.MC = mc;
+		this.ESize = esize;
 	}
 
 	@Override
@@ -29,14 +35,7 @@ public class DGraph implements graph
 	{
 		if(key < 0 && !this.V.containsKey(key))
 		{
-			try 
-			{
-				throw new IOException();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
+			return null;
 		}
 		return this.V.get(key);
 	}
@@ -46,14 +45,7 @@ public class DGraph implements graph
 	{
 		if( !E.containsKey(src) && !E.containsValue(E.get(dest)))
 		{
-			try 
-			{
-				throw new IOException();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
+			return null;
 		}
 		return this.E.get(src).get(dest);
 	}
@@ -63,6 +55,8 @@ public class DGraph implements graph
 	{
 		this.V.put(n.getKey(), n);
 		MC++;
+		setChanged();
+		notifyObservers();
 	}
 
 	@Override
@@ -70,10 +64,11 @@ public class DGraph implements graph
 	{
 		boolean b=true;
 		
-		if (src == dest) 
+		if (src == dest && w <= 0) 
 		{
 			System.out.println("src and dest are the same");
 			b = false;
+			return;
 		}
 		if (b||(!(V.get(src) == null) || !(V.get(dest) == null))) 
 		{
@@ -81,7 +76,8 @@ public class DGraph implements graph
 			{
 				if (E.get(src).get(dest) != null) 
 				{
-					throw new RuntimeException("The edge is already exist!");
+					System.out.println("The edge is already exsit");
+					//throw new RuntimeException("The edge is already exist!");
 				}
 				else 
 				{
@@ -102,8 +98,11 @@ public class DGraph implements graph
 		} 
 		else if(b)
 		{
-			throw new RuntimeException("src/dest does not exist!");
+			System.out.println("src/dest does not exist");
+			//throw new RuntimeException("src/dest does not exist!");
 		}
+		setChanged();
+		notifyObservers();
 	}
 
 	@Override
@@ -115,6 +114,7 @@ public class DGraph implements graph
 	@Override
 	public Collection<edge_data> getE(int node_id) 
 	{
+		if(!E.containsKey(node_id)) {return null;}
 		
 		return this.E.get(node_id).values();
 	}
@@ -124,20 +124,47 @@ public class DGraph implements graph
 	{
 		if(!V.containsKey(key))
 		{
-			try 
+			return null;
+		}
+		int n_key;
+		
+		for (Entry<Integer, node_data> nodes : V.entrySet())
+		{
+			n_key = nodes.getKey();
+			if(n_key != key && E.containsKey(n_key) && E.get(n_key).containsKey(key))
 			{
-				throw new IOException();
+				E.get(n_key).remove(key);
+				ESize--;
+				MC++;
 			}
-			catch(IOException e)
+			if(n_key == key && E.containsKey(key))
 			{
-				e.printStackTrace();
+				MC = MC+E.get(key).size();
+				ESize = ESize-E.get(key).size();
+				E.remove(key);
 			}
 		}
-		node_data n = V.get(key);
-		V.remove(key);
-		E.remove(key);
-		E.get(key).remove(key);
-		return n;
+		MC++;		
+		setChanged();
+		notifyObservers();
+		return V.remove(key);
+	
+//		node_data n = V.get(key);
+//		
+//		for (Iterator<node_data> iterator = this.getV().iterator(); iterator.hasNext();) {
+//			node_data j = (node_data) iterator.next();
+//			E.get(j.getKey()).remove(key);
+//		}
+//		
+//		if(this.E.get(key) != null)
+//		{
+//			this.ESize -= this.E.get(key).size();
+//		}
+//		V.remove(key);
+//		E.remove(key);
+//		MC++;
+//		return n;
+//		
 	}
 
 	@Override
@@ -145,19 +172,20 @@ public class DGraph implements graph
 	{
 		if(!E.containsKey(src) && !E.get(src).containsKey(dest))
 		{
-			try 
-			{
-				throw new IOException();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
+			return null;
 		}
+		if( E.get(src).get(dest) == null)
+		{
+			return null;
+		}
+		
 		edge_data e = E.get(src).get(dest);
-		E.remove(src, E.get(dest));
+		
+		E.get(src).remove(dest);
 		ESize--;
 		MC++;
+		setChanged();
+		notifyObservers();
 		return e;
 	}
 

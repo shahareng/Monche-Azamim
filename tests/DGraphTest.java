@@ -28,15 +28,21 @@ public class DGraphTest {
 		graph.addNode(new node(12,new Point3D(120,300,200),0));
 		graph.addNode(new node(13,new Point3D(150,200,100),0));
 		graph.addNode(new node(14,new Point3D(75,250,250),0));
+		graph.addNode(new node(15,new Point3D(300,300,300),0));
+		graph.addNode(new node(16,new Point3D(500,100,100),0));
 
-		graph.connect(10,13,0);
-		graph.connect(10,14,0);
-		graph.connect(11,10,0);
-		graph.connect(11,13,0);
-		graph.connect(12,11,0);
+		graph.connect(10,13,3);
+		graph.connect(10,14,4);
+		graph.connect(11,10,5);
+		graph.connect(11,13,6);
+		graph.connect(12,11,7);
 		graph.connect(13,14,1);
 		graph.connect(13,12,1.5);
-		graph.connect(14,13,0);
+		graph.connect(14,13,3.5);
+		graph.connect(12,15,8);
+		graph.connect(11,15,10);
+		graph.connect(15, 16,20);
+		graph.connect(11,16,15);
 	}
 
 	@After
@@ -106,9 +112,12 @@ public class DGraphTest {
 	}
 
 	@Test
-	public void connectTest() //
+	public void connectTest()
 	{
-		fail("Not yet implemented");
+		int weight = 2;
+		graph.connect(10,12,2);
+		edge_data e = graph.getEdge(10, 12);
+		assertEquals(e.getWeight(), weight, 0.000001);
 	}
 
 	@Test
@@ -147,7 +156,7 @@ public class DGraphTest {
 		try {
 			int size2 = graph.nodeSize();
 			graph.removeNode(key2);
-			assertNotEquals(graph.nodeSize(), size2);
+			assertEquals(graph.nodeSize(), size2);
 		}
 		catch (Exception e)
 		{
@@ -187,12 +196,8 @@ public class DGraphTest {
 	@Test
 	public void edgeSizeTest()
 	{
-		int size = 0;
-		for (node_data node : graph.getV())
-		{
-			size += graph.getE(node.getKey()).size();
-		}
-		assertEquals(graph.edgeSize(), size);
+		int numOfConnects = 12;
+		assertEquals(graph.edgeSize(), numOfConnects);
 	}
 
 	@Test

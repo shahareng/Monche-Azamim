@@ -5,12 +5,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import dataStructure.DGraph;
 import dataStructure.edge_data;
@@ -23,7 +27,7 @@ import dataStructure.node_data;
  * @author 
  *
  */
-public class Graph_Algo implements graph_algorithms
+public class Graph_Algo implements graph_algorithms,Serializable
 {
 	private graph g;
 
@@ -84,108 +88,180 @@ public class Graph_Algo implements graph_algorithms
 	@Override
 	public boolean isConnected()
 	{
-		boolean isCon = false;
-		int count = 0;
+		if(g.getV().size()==0){
+			return true;
+		}
+		int conutTag = 0;
+		boolean NullSrcNode = true;
+		for (node_data nd : g.getV()) {
+			nd.setTag(0);
+		}
+		Queue<Integer> q = new LinkedList<>();
 		node_data first = g.getV().iterator().next();
-		for(node_data nodes : g.getV()) // isWay(first,all the nodes)
-		{
-			isCon = isWay(first.getKey(), nodes.getKey());
-			if (isCon == true)
-			{
-				count++;
+		q.add(first.getKey());
+		while (!q.isEmpty()) {
+			int peek = q.peek();
+			try {
+				for (edge_data e : g.getE(peek)) {
+					if (g.getNode(e.getDest()).getTag() == 0) {
+						g.getNode(e.getDest()).setTag(1);
+						conutTag++;
+						q.add(e.getDest());
+					}
+				}
+			} catch (Exception e) {
+				//this node has no edges
+				NullSrcNode = false;
 			}
+			q.poll();
 		}
-		if (count != g.nodeSize()) // count != number of all the nodes
-		{
-			return false;
+		if (conutTag == g.nodeSize() && NullSrcNode) {
+			return true;
 		}
-		for(node_data nodes : g.getV()) // isWay(all the nodes,first)
-		{
-			isCon = isWay(nodes.getKey(), first.getKey());
-			if (isCon == false)
-			{
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
 
+	private void resetInfo()
+	{
+		for(Iterator<node_data> verIter=g.getV().iterator();verIter.hasNext();)
+		{
+			verIter.next().setInfo("not visit");
+		}
+	}
+	
 	public boolean isWay(int src,int dest)
 	{
 		boolean flag = false;
 		g.getNode(src).setInfo("visit");
-		try {
-			for(Iterator<edge_data> iter=g.getE(src).iterator();iter.hasNext();) 
+		
+		try
+		{
+			for(Iterator<edge_data> iter = g.getE(src).iterator();iter.hasNext();) 
 			{
 				edge_data ed = iter.next();
-				if (!g.getNode(ed.getDest()).getInfo().equals("visit"))
-				{
+				String temp  = g.getNode(ed.getDest()).getInfo();
+				//System.out.println(temp);
+				if(!temp.equals("visit"))
+				{				
 					if(ed.getDest() == dest)
 					{
 						return true;
 					}
-					else {
-						if(!flag && isWay(ed.getDest(), dest))
-						{
-						flag = true;
+					else 
+					{
+						if(!flag && isWay(ed.getDest(),dest))
+						{							
+							flag =  true;
 						}
 					}
 				}
 			}
+			this.resetInfo();
 			return flag;
-		}
-		catch (Exception e)
+		} catch(Exception e) 
 		{
-			return false;
+			this.resetInfo();
+			flag =  false;
 		}
+		return flag;
 	}
 	@Override
 	public double shortestPathDist(int src, int dest) 
 	{
+//		  = g.getV()
+//		Vertex2 s = vertices[source];
+//		s.dist = 0.;
+//		HeapMin Q = new HeapMin();
+//		Q.minHeapInsert(s);
+//		//O(nlogn)
+//		for (int i=1; i<vertices.length; i++){//O(n)
+//			Q.minHeapInsert(vertices[i]);//O(logn)
+//		}
+//		//O(nlogn) + O(mlogn) = O((m+n)logn)
+//		while (!Q.isEmpty()) {//O(m)
+//			Vertex2 u = Q.heapExtractMin();//O(logn)
+//			// Visit each edge exiting u
+//			for (Edge2 e : u.edges){
+//				Vertex2 v = vertices[e.vert];
+//				if (!v.visited){
+//					double distU = u.dist + e.weight;
+//					if (distU < v.dist) {//relaxation
+//						v.dist = distU ;
+//						v.previous = vertices[u.name].name;
+//						Q.heapDecreaseKey(v);//O(logn)
+//					}
+//				}
+//			}
+//			u.visited = true;
+//		}
 		node_data minWnode = null;
+		
 		for(Iterator<node_data> iter=g.getV().iterator();iter.hasNext();) 
 		{
 			// init the first node to zero
 			node_data nd=iter.next();
 			if(nd.getKey()==src)
+			{
 				nd.setWeight(0);
-			else // init the other nodes to inifinity
+			}
+			else
+			{
+				// init the other nodes to inifinity
 				nd.setWeight(Double.POSITIVE_INFINITY);
+			}
 		}
 
 		if(!isWay(src,dest)) // if there is no way 
 		{
 			return Double.POSITIVE_INFINITY;
 		}
-
-		Collection<node_data> nodes = g.getV();
+		
+		Collection<node_data> nodes = new ArrayList<node_data>();
+		for (node_data node : g.getV()) 
+		{
+			nodes.add(node);
+		}
 		while(!nodes.isEmpty())
 		{
-			double minW=Double.POSITIVE_INFINITY; // return this value
-			minWnode=null; // node with min weigth
-			for(Iterator<node_data> iter = nodes.iterator();iter.hasNext();) { //find min node
-				node_data nd=iter.next();
-				if(nd.getWeight() < minW) {
-					minW=nd.getWeight();
-					minWnode=nd;
+			double minW = Double.POSITIVE_INFINITY; // return this value
+			minWnode = null; // node with min weigth
+			
+			for(Iterator<node_data> iter = nodes.iterator();iter.hasNext();) 
+			{ //find min node
+				node_data nd = iter.next();
+				if(nd.getWeight() < minW) 
+				{
+					minW = nd.getWeight();
+					minWnode = nd;
 				}
 			}
 			try // if the node doesn't have edge
 			{
-				for(Iterator<edge_data> iter=g.getE(minWnode.getKey()).iterator();iter.hasNext();)
+				edge_data ed = null;
+				Collection<edge_data> edges = new ArrayList<edge_data>();
+				for (edge_data edge : g.getE(minWnode.getKey())) 
 				{
-					edge_data ed=iter.next();
-					for(Iterator<node_data> iterNode=nodes.iterator();iter.hasNext();) 
+					edges.add(edge);
+				}
+				while (!edges.isEmpty())
+				{
+					ed = edges.iterator().next();
+					if (!nodes.contains(ed.getDest()))
+					{
+						edges.remove(ed);
+					}
+					for(Iterator<node_data> iter = nodes.iterator();iter.hasNext();) 
 					{ //find the dest node
-						node_data nd=iterNode.next();
+						node_data nd = iter.next();
 						if(nd.getKey() == ed.getDest())
 						{
-							if(nd.getWeight() < (minWnode.getWeight()+ed.getWeight())) 
+							if(nd.getWeight() > (minWnode.getWeight()+ed.getWeight())) 
 							{
 								nd.setWeight(minWnode.getWeight()+ed.getWeight());
 								nd.setInfo(minWnode.getKey()+"");
-								nd.setTag(minWnode.getKey()); // tag = the key of the prev node
-								iterNode.remove();
+								nd.setTag(minWnode.getKey());
+								edges.remove(ed);
+								break;
 							}
 						}
 					}
@@ -206,21 +282,20 @@ public class Graph_Algo implements graph_algorithms
 	@Override
 	public List<node_data> shortestPath(int src, int dest)
 	{
-		List<node_data> node = new ArrayList<node_data>();
-		List<node_data> node2 = new ArrayList<node_data>();
+		List<node_data> node = new ArrayList<>();
 		shortestPathDist(src, dest);
-		node_data des = null, nd = null, prev = null;
+		node_data des = null, nd = null, prev = null, sr = null;
 		for(Iterator<node_data> iter=g.getV().iterator();iter.hasNext();) 
 		{
 			nd=iter.next();
 			if(nd.getKey() == src)
-				node.add(nd);
+				sr = nd;
 			if(nd.getKey() == dest)
 				des = nd;
 		}
 		nd = des;
 		while (nd.getKey() != src) {
-			node2.add(nd);
+			node.add(nd);
 			for(Iterator<node_data> iter=g.getV().iterator();iter.hasNext();) 
 			{
 				prev = iter.next();
@@ -230,18 +305,13 @@ public class Graph_Algo implements graph_algorithms
 				}
 			}
 		}
-		int size = node2.size();
-		while(0 <= size)
-		{
-			node.add(node2.get(size));
-			size--;
-		}
+		node.add(sr);
+		Collections.reverse(node);
 		return node;
 	}
 
 	@Override
 	public List<node_data> TSP(List<Integer> targets) 
-
 	{
 		List<node_data> path = new ArrayList<node_data>();
 		if (this.isConnected() == false)
@@ -249,9 +319,9 @@ public class Graph_Algo implements graph_algorithms
 			return null;
 		}
 		int rand = (int) (Math.random() * targets.size());
-		int src = targets.get(rand), dest = 0;
+		int src = targets.get(rand), dest = 0, j = 0;
 		path.add(g.getNode(src));
-		targets.remove(src);
+		targets.remove(rand);
 		double minWay = Double.POSITIVE_INFINITY;
 		while (!targets.isEmpty())
 		{
@@ -261,11 +331,12 @@ public class Graph_Algo implements graph_algorithms
 				{
 					minWay = this.shortestPathDist(src, targets.get(i));
 					dest = targets.get(i);
+					j = i;
 				}
 			}
 			path.addAll(this.shortestPath(src, dest));
 			src = dest;
-			targets.remove(dest);
+			targets.remove(j);
 		}
 		return path;
 	}

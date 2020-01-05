@@ -1,8 +1,10 @@
 package dataStructure;
 
+import java.io.Serializable;
+
 import utils.Point3D;
 
-public class node implements node_data
+public class node implements node_data,Serializable
 {
 	int key;
 	Point3D location;
@@ -15,6 +17,13 @@ public class node implements node_data
 		this.key = key;
 		this.location = p;
 		this.weight = w;
+	}
+	
+	public node(int key,Point3D p)
+	{
+		this.key = key;
+		this.location = p;
+		this.weight = 0;
 	}
 	
 	@Override
